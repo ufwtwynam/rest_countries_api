@@ -1,23 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useEffect, useState } from 'react';
+import Country from './Country';
 
-function App() {
+const App = () => {
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    fetch('https://restcountries.com/v2/all')
+      .then(response => response.json())
+      .then(data => setCountries(data))
+      .catch(error => console.log(error));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Country Bucket List</h1>
+      {countries.map(country => (
+        <Country key={country.alpha3Code} country={country} />
+      ))} 
+      {/* alpha-3 code e.g. GBR */}
+      <h2>Visited Countries</h2>
+      {countries.filter(country => country.visited).map(country => (
+        <Country key={country.alpha3Code} country={country} />
+      ))}
     </div>
   );
 }
